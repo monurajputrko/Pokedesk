@@ -12,7 +12,6 @@ import Pagination from "../components/ui/Pagination";
 
 function Home({ searchTerm, openBigCard }) {
   const [page, setPage] = useState(1);
-  const limit = 100;
 
   const {
     data: pokemonData,
@@ -26,9 +25,7 @@ function Home({ searchTerm, openBigCard }) {
             `https://pokeapi.co/api/v2/pokemon/${searchTerm.toLowerCase()}`
           ).then((res) => res.data)
         : Axios.get(
-            `https://pokeapi.co/api/v2/pokemon?offset=${
-              (page - 1) * limit
-            }&limit=${limit}`
+            `https://pokeapi.co/api/v2/pokemon?offset=0&limit=${(page*20)}`
           ).then((res) => {
             const { results } = res.data;
             const requests = results.map((result) => Axios.get(result.url));
@@ -67,12 +64,15 @@ function Home({ searchTerm, openBigCard }) {
     []
   );
 
-  function handlePrevClick() {
-    setPage((prevPage) => Math.max(prevPage - 1, 1));
-  }
+  // function handlePrevClick() {
+  //   setPage((prevPage) => Math.max(prevPage - 1, 1));
+  // }
 
-  function handleNextClick() {
-    setPage((prevPage) => prevPage + 1);
+  // function handleNextClick() {
+  //   setPage((prevPage) => prevPage + 1);
+  // }
+  function handleLoadMoreClick(){
+    setPage((prevPage)=>prevPage+1);
   }
 
   if (isLoading) {
@@ -122,11 +122,12 @@ function Home({ searchTerm, openBigCard }) {
   } else {
     return (
       <BackgroundImage>
-        <Pagination
+        {/* <Pagination
           page={page}
-          handlePrevClick={handlePrevClick}
-          handleNextClick={handleNextClick}
-        />
+          // handlePrevClick={handlePrevClick}
+          // handleNextClick={handleNextClick}
+
+        /> */}
         <CardsContainer>
           {Array.isArray(pokemonData) &&
             pokemonData.map((pokemon) => {
@@ -157,8 +158,7 @@ function Home({ searchTerm, openBigCard }) {
         </CardsContainer>
         <Pagination
           page={page}
-          handlePrevClick={handlePrevClick}
-          handleNextClick={handleNextClick}
+          handleLoadMoreClick={handleLoadMoreClick}
         />
       </BackgroundImage>
     );
